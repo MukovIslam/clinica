@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: clinica         # Название БД
+      POSTGRES_USER: postgres      # Логин
+      POSTGRES_PASSWORD: 310788  # Пароль
+    ports:
+      - "5432:5432"                # Пробрасываем порт
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # Храним данные между перезапусками
+
+  app:
+    build: .                      # Собираем из Dockerfile в текущей папке
+    depends_on:
+      - postgres                  # Запускать после базы данных
+    ports:
+      - "8083:8083"               # Пробрасываем порт приложения
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clinica
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 310788
+
+volumes:
+  pgdata:
